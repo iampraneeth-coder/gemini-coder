@@ -35,7 +35,6 @@
       displayMessage('user', message);
 
       try {
-        // Make a request to your Netlify function
         const response = await fetch('/.netlify/functions/gemini-api', {
           method: 'POST',
           headers: {
@@ -45,7 +44,9 @@
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          //Improved error message
+          const errorText = await response.text();
+          throw new Error(`HTTP error! Status: ${response.status}, Text: ${errorText}`);
         }
 
         const data = await response.json();
@@ -53,7 +54,8 @@
 
       } catch (error) {
         console.error("Error communicating with Gemini:", error);
-        displayMessage('bot', "Sorry, I encountered an error.");
+        //Display detailed error message to the user.
+        displayMessage('bot', `Error: ${error.message}.  Check the console for more details.`);
       }
     }
 
