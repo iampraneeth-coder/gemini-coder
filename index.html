@@ -106,24 +106,23 @@ async function sendMessage() {
         }
 
  function runCode(code) {
-            // Create a canvas element to execute the code
-            const canvas = document.createElement('canvas');
-            canvas.width = 200;
-            canvas.height = 200;
-            canvas.style.border = '1px solid #fff'; // Style the canvas
+           const canvas = document.createElement('canvas');
+           canvas.width = 200;
+           canvas.height = 200;
+           canvas.style.border = '1px solid #fff'; // Style the canvas
 
-            const ctx = canvas.getContext('2d');
-            //Add it to the chat
-            chatArea.appendChild(canvas);
-            try {
-                // Execute the code within a function scope
-              new Function('canvas', 'ctx', code)(canvas, ctx);
-            } catch (error) {
-                console.error('Error executing code:', error);
-                ctx.fillText('Error: ' + error.message, 10, 20);
-            }
+           const ctx = canvas.getContext('2d');
+           //Add it to the chat
+           chatArea.appendChild(canvas);
+           try {
+               // Execute the code within a function scope
+             new Function('canvas', 'ctx', code)(canvas, ctx);
+           } catch (error) {
+               console.error('Error executing code:', error);
+               ctx.fillText('Error: ' + error.message, 10, 20);
+           }
 
-    }
+   }
 
 //Create message on the HTML tag:
 function displayMessage(sender, message) {
