@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gemini Chatbot</title>
+  <style>
+    #chat-area {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      height: 300px;
+      overflow-y: scroll;
+    }
+    #user-input {
+      width: 80%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gemini Chatbot</h1>
+  <div id="chat-area"></div>
+  <input type="text" id="user-input" placeholder="Type your message...">
+  <button id="send-button">Send</button>
+
+  <script>
+    const chatArea = document.getElementById('chat-area');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+
+    sendButton.addEventListener('click', sendMessage);
+
+    async function sendMessage() {
+      const message = userInput.value;
+      userInput.value = '';
+
+      displayMessage('user', message);
+
+      try {
+        // Make a request to your Netlify function
+        const response = await fetch('/.netlify/functions/gemini-api', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: message })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        displayMessage('bot', data.reply); // Assuming the Netlify function returns { reply: "..." }
+
+      } catch (error) {
+        console.error("Error communicating with Gemini:", error);
+        displayMessage('bot', "Sorry, I encountered an error.");
+      }
+    }
+
+    function displayMessage(sender, message) {
+      const msgDiv = document.createElement('div');
+      msgDiv.textContent = `${sender}: ${message}`;
+      chatArea.appendChild(msgDiv);
+      chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
+    }
+  </script>
+</body>
+</html>
