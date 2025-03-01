@@ -1,4 +1,4 @@
-/* General Styles */
+ /* General Styles */
 body {
     font-family: 'Open Sans', sans-serif;
     margin: 0;
@@ -92,38 +92,52 @@ h1 {
 
 /* Typing Indicator */
 .typing-indicator {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
+    position: relative;
+    bottom: initial;
+    left: initial;
     display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* Keep dots aligned to the left */
+    padding: 5px;
+    /* Add some padding around the dots */
+    border-radius: 10px;
+    /* Match bubble corners */
+    /* background-color: rgba(255, 255, 255, 0.1);  Add a subtle background */
+    margin-top: 5px;
+    /* Add some space above */
 }
 
 .typing-indicator span {
-    width: 8px;
-    height: 8px;
-    background-color: #aaa;
+    width: 6px;
+    height: 6px;
+    background-color: #bbb;
+    /* Darker dots */
     border-radius: 50%;
-    margin-right: 5px;
-    animation: typing 1s infinite;
+    margin-right: 4px;
+    display: inline-block;
+    /* Ensure they sit side by side */
+    animation: blink 1.2s infinite both;
+    /* Adjusted animation */
 }
 
 .typing-indicator span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing-indicator span:nth-child(3) {
     animation-delay: 0.4s;
 }
 
-@keyframes typing {
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+@keyframes blink {
     0% {
-        opacity: 0.4;
+        opacity: 0.2;
     }
-    50% {
-        opacity: 1;
+    20% {
+        opacity: 0.9;
     }
     100% {
-        opacity: 0.4;
+        opacity: 0.2;
     }
 }
 
@@ -305,3 +319,36 @@ code {
     font-family: 'Courier New', monospace;
     font-size: 14px;
 }
+
+.message-part {
+    display: inline-block;
+    /* Display as inline block to align side by side */
+    vertical-align: top;
+    /* Align to the top */
+    width: 100%;
+    /* Allow it to take full width if needed */
+    box-sizing: border-box;
+    /* Ensure padding and border are included in the width */
+    margin-bottom: 5px;
+    /* Space between parts */
+}
+
+ .run-button {
+        background-color: #007bff;
+        /* Blue */
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+        margin-left: 5px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .run-button:hover {
+        background-color: #0056b3;
+    }
