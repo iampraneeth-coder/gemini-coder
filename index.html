@@ -1,64 +1,71 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Gemini Chatbot</title>
-  <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gemini Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Add Open Sans font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
-  <h1>Gemini Chatbot</h1>
-  <div id="chat-area"></div>
-  <div id="user-input-area">
-    <input type="text" id="user-input" placeholder="Type your message...">
-    <button id="send-button">Send</button>
-  </div>
+    <h1>Gemini Chatbot</h1>
+    <div id="chat-area"></div>
+    <div id="user-input-area">
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button id="send-button">Send</button>
+    </div>
 
-  <script>
-    const chatArea = document.getElementById('chat-area');
-    const userInput = document.getElementById('user-input');
-    const sendButton = document.getElementById('send-button');
+    <script>
+        const chatArea = document.getElementById('chat-area');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
 
-    sendButton.addEventListener('click', sendMessage);
+        sendButton.addEventListener('click', sendMessage);
 
-    async function sendMessage() {
-      const message = userInput.value;
-      userInput.value = '';
+        async function sendMessage() {
+            const message = userInput.value;
+            userInput.value = '';
 
-      displayMessage('user', message);
+            displayMessage('user', message);
 
-      try {
-        const response = await fetch('/.netlify/functions/gemini-api', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ message: message })
-        });
+            try {
+                const response = await fetch('/.netlify/functions/gemini-api', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
 
-        if (!response.ok) {
-          //Improved error message
-          const errorText = await response.text();
-          throw new Error(`HTTP error! Status: ${response.status}, Text: ${errorText}`);
+                if (!response.ok) {
+                    //Improved error message
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}, Text: ${errorText}`);
+                }
+
+                const data = await response.json();
+                displayMessage('bot', data.reply); // Assuming the Netlify function returns { reply: "..." }
+
+            } catch (error) {
+                console.error("Error communicating with Gemini:", error);
+                //Display detailed error message to the user.
+                displayMessage('bot', `Error: ${error.message}.  Check the console for more details.`);
+            }
         }
 
-        const data = await response.json();
-        displayMessage('bot', data.reply); // Assuming the Netlify function returns { reply: "..." }
-
-      } catch (error) {
-        console.error("Error communicating with Gemini:", error);
-        //Display detailed error message to the user.
-        displayMessage('bot', `Error: ${error.message}.  Check the console for more details.`);
-      }
-    }
-
-    function displayMessage(sender, message) {
-      const msgDiv = document.createElement('div');
-      msgDiv.classList.add('message'); // Add the "message" class
-      msgDiv.classList.add(sender); // Add the "user" or "bot" class
-      msgDiv.textContent = `${message}`;
-      chatArea.appendChild(msgDiv);
-      chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
-    }
-  </script>
+        function displayMessage(sender, message) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message'); // Add the "message" class
+            msgDiv.classList.add(sender); // Add the "user" or "bot" class
+            msgDiv.textContent = `${message}`;
+            chatArea.appendChild(msgDiv);
+            chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
+        }
+    </script>
 </body>
+
 </html>
