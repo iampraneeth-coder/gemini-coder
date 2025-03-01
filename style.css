@@ -1,38 +1,74 @@
 body {
   font-family: sans-serif;
-  margin: 20px;
+  margin: 0; /* Remove default body margin */
+  background-color: #f0f0f0; /* Light gray background */
 }
 
 h1 {
   text-align: center;
+  margin-top: 20px;
 }
 
 #chat-area {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  height: 300px;
+  max-width: 800px; /* Limit width for better readability */
+  margin: 20px auto; /* Center the chat area */
+  padding: 20px;
+  background-color: #fff; /* White background for chat area */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  height: 400px;
   overflow-y: scroll;
 }
 
-#user-input {
-  width: 80%;
-  padding: 5px;
-}
-
-#send-button {
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
 .message {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 20px; /* Rounded corners for message bubbles */
+  word-break: break-word; /* Prevent long words from breaking the layout */
+  max-width: 70%; /* Limit message width */
 }
 
 .user {
-  color: blue;
+  background-color: #e0f7fa; /* Light blue for user messages */
+  text-align: right; /* Align user messages to the right */
+  margin-left: auto; /* Push user messages to the right */
 }
 
 .bot {
-  color: green;
+  background-color: #f0f0f0; /* Light gray for bot messages */
+  text-align: left; /* Align bot messages to the left */
+  margin-right: auto; /* Push bot messages to the left */
+}
+
+#user-input-area {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex; /* Use flexbox to align input and button */
+  align-items: center; /* Vertically align items */
+}
+
+#user-input {
+  width: 100%; /* Expand to fill available space */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  margin-right: 10px; /* Add some space between input and button */
+}
+
+#send-button {
+  background-color: #4caf50; /* Green send button */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth transition on hover */
+}
+
+#send-button:hover {
+  background-color: #388e3c; /* Darker green on hover */
 }
