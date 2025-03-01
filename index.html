@@ -37,7 +37,11 @@
             }); // Add user message to history
 
             // Display typing indicator
-            chatArea.innerHTML += '<div class="bot typing-indicator"><span></span><span></span><span></span></div>';
+            chatArea.innerHTML += `
+                <div class="bot message typing-indicator">
+                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Bot" alt="Bot Avatar" class="avatar">
+                    <span><span></span><span></span><span></span></span>
+                </div>`;
             chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
 
             try {
@@ -100,6 +104,19 @@
             textSpan.textContent = `${message}`;
             msgDiv.appendChild(textSpan); // Append the message to the message div
 
+            if (sender === 'bot') {
+                const copyButton = document.createElement('button');
+                copyButton.textContent = 'Copy';
+                copyButton.classList.add('copy-button');
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(message);
+                    copyButton.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyButton.textContent = 'Copy';
+                    }, 2000); // Reset button text after 2 seconds
+                });
+                msgDiv.appendChild(copyButton);
+            }
             chatArea.appendChild(msgDiv);
             chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
         }
