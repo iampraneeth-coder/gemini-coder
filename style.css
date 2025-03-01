@@ -1,17 +1,20 @@
 /* General Styles */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Open Sans', sans-serif; /* Modern font */
   margin: 0;
-  background-color: #1e1e1e; /* Dark background */
+  background-color: #121212; /* Very dark background */
   color: #fff; /* Light text */
   line-height: 1.6;
-  overflow-y: scroll; /* Always show scrollbar for consistent layout */
+  overflow-y: scroll;
+  -webkit-font-smoothing: antialiased; /* Improve font rendering */
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
   text-align: center;
   margin-top: 20px;
   color: #ddd;
+  font-weight: 300; /* Lighter font weight */
 }
 
 /* Chat Area */
@@ -19,62 +22,62 @@ h1 {
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;
-  background-color: #282828; /* Darker background for chat area */
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+  background-color: #1e1e1e; /* Slightly lighter background for chat area */
+  border-radius: 12px; /* More rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Deeper shadow */
   height: 500px;
   overflow-y: scroll;
-  scroll-behavior: smooth; /* Smooth scrolling */
+  scroll-behavior: smooth;
+  padding-bottom: 70px; /* Make room for the input field */
 }
 
 /* Message Styles */
 .message {
-  clear: both; /* Prevent floating issues */
-  margin-bottom: 15px;
+  clear: both;
+  margin-bottom: 12px;
   padding: 12px 20px;
-  border-radius: 25px;
+  border-radius: 24px; /* More rounded bubbles */
   word-break: break-word;
   max-width: 70%;
   font-size: 16px;
-  position: relative; /* For triangle */
+  position: relative;
+  transition: all 0.2s ease-in-out; /* Smooth transitions */
 }
 
 /* User Message */
 .user {
-  background-color: #3f51b5; /* Blue for user */
+  background-color: #546e7a; /* Muted blue-gray */
   color: #fff;
-  float: right; /* Align user messages to the right */
+  float: right;
 }
 
 .user::before {
-  /* Triangle to the right */
   content: '';
   position: absolute;
-  right: -10px;
+  right: -8px;
   top: 8px;
-  border-width: 10px 0 10px 10px;
+  border-width: 8px 0 8px 8px;
   border-style: solid;
-  border-color: transparent #3f51b5;
+  border-color: transparent #546e7a;
   display: block;
   width: 0;
 }
 
 /* Bot Message */
 .bot {
-  background-color: #424242; /* Dark gray for bot */
+  background-color: #37474f; /* Darker gray for bot */
   color: #eee;
-  float: left; /* Align bot messages to the left */
+  float: left;
 }
 
 .bot::before {
-  /* Triangle to the left */
   content: '';
   position: absolute;
-  left: -10px;
+  left: -8px;
   top: 8px;
-  border-width: 10px 10px 10px 0;
+  border-width: 8px 8px 8px 0;
   border-style: solid;
-  border-color: transparent #424242;
+  border-color: transparent #37474f;
   display: block;
   width: 0;
 }
@@ -83,49 +86,56 @@ h1 {
 #user-input-area {
   max-width: 800px;
   margin: 0 auto;
-  padding: 15px 20px;
-  background-color: #282828;
-  border-radius: 10px;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Shadow on top */
+  padding: 12px 20px;
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
-  position: relative; /* Ensure it's above chat area */
-  z-index: 100; /* Ensure it's above chat area */
+  position: fixed; /* Stick to the bottom */
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
 }
 
 #user-input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border: none;
-  border-radius: 25px;
-  background-color: #333; /* Slightly lighter background */
+  border-radius: 24px; /* More rounded */
+  background-color: #252525; /* Darker input background */
   color: #fff;
   font-size: 16px;
-  outline: none; /* Remove focus outline */
-  transition: background-color 0.3s; /* Smooth transition */
+  outline: none;
+  transition: background-color 0.3s;
+  font-weight: 300; /* Lighter font weight */
 }
 
 #user-input:focus {
-  background-color: #444;
+  background-color: #333;
 }
 
 #send-button {
-  background-color: #3f51b5;
+  background-color: #607d8b; /* Blue-gray send button */
   color: white;
-  padding: 12px 20px;
+  padding: 10px 18px;
   border: none;
-  border-radius: 25px;
+  border-radius: 24px;
   cursor: pointer;
   transition: background-color 0.3s;
   font-size: 16px;
   margin-left: 10px;
+  font-weight: 300; /* Lighter font weight */
 }
 
 #send-button:hover {
-  background-color: #303f9f;
+  background-color: #455a64; /* Darker blue-gray */
 }
 
-/* Responsiveness (Simple) */
+/* Responsiveness */
 @media (max-width: 600px) {
   #chat-area,
   #user-input-area {
@@ -135,16 +145,18 @@ h1 {
 
   .message {
     max-width: 90%;
-    font-size: 14px;
-    padding: 8px 14px;
+    font-size: 15px;
+    padding: 10px 16px;
     border-radius: 20px;
   }
 
   #user-input {
-    padding: 10px;
+    padding: 9px;
+    font-size: 15px;
   }
 
   #send-button {
-    padding: 10px 16px;
+    padding: 9px 14px;
+    font-size: 15px;
   }
 }
