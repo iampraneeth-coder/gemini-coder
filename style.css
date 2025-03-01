@@ -106,6 +106,7 @@ h1 {
     /* background-color: rgba(255, 255, 255, 0.1);  Add a subtle background */
     margin-top: 5px;
     /* Add some space above */
+    flex-shrink: 0; /* Added to prevent shrinking */
 }
 
 .typing-indicator span {
@@ -270,6 +271,8 @@ h1 {
     /* background-color: rgba(255, 255, 255, 0.1);  Add a subtle background */
     margin-top: 5px;
     /* Add some space above */
+    flex-shrink: 0;
+    /* Added to prevent shrinking */
 }
 
 .typing-indicator span {
