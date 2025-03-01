@@ -22,6 +22,8 @@
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
 
+        let conversationHistory = []; // Initialize conversation history
+
         sendButton.addEventListener('click', sendMessage);
 
         async function sendMessage() {
@@ -29,6 +31,14 @@
             userInput.value = '';
 
             displayMessage('user', message);
+            conversationHistory.push({
+                sender: 'user',
+                message: message
+            }); // Add user message to history
+
+            // Display typing indicator
+            chatArea.innerHTML += '<div class="bot typing-indicator"><span></span><span></span><span></span></div>';
+            chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
 
             try {
                 const response = await fetch('/.netlify/functions/gemini-api', {
@@ -37,7 +47,8 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: message
+                        message: message,
+                        history: conversationHistory // Send conversation history to function
                     })
                 });
 
@@ -49,11 +60,22 @@
 
                 const data = await response.json();
                 displayMessage('bot', data.reply); // Assuming the Netlify function returns { reply: "..." }
+                conversationHistory.push({
+                    sender: 'bot',
+                    message: data.reply
+                }); // Add bot message to history
 
             } catch (error) {
                 console.error("Error communicating with Gemini:", error);
                 //Display detailed error message to the user.
                 displayMessage('bot', `Error: ${error.message}.  Check the console for more details.`);
+            } finally {
+                // Remove typing indicator
+                const typingIndicator = chatArea.querySelector('.typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+                chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
             }
         }
 
