@@ -83,7 +83,23 @@
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('message'); // Add the "message" class
             msgDiv.classList.add(sender); // Add the "user" or "bot" class
-            msgDiv.textContent = `${message}`;
+
+            // Create the avatar element
+            const avatarImg = document.createElement('img');
+            avatarImg.classList.add('avatar');
+            if (sender === 'user') {
+                avatarImg.src = 'https://api.dicebear.com/7.x/pixel-art/svg?seed=User'; // User avatar
+                avatarImg.alt = 'User Avatar';
+            } else {
+                avatarImg.src = 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Bot'; // Bot avatar
+                avatarImg.alt = 'Bot Avatar';
+            }
+            msgDiv.appendChild(avatarImg); // Append the avatar to the message div
+
+            const textSpan = document.createElement('span');
+            textSpan.textContent = `${message}`;
+            msgDiv.appendChild(textSpan); // Append the message to the message div
+
             chatArea.appendChild(msgDiv);
             chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
         }
