@@ -23,6 +23,8 @@
         const sendButton = document.getElementById('send-button');
 
         let conversationHistory = []; // Initialize conversation history
+        codeblocks = []; //the code for the code block
+         actions = []; //the actions after the codeblock;
 
         sendButton.addEventListener('click', sendMessage);
 
@@ -103,7 +105,28 @@ async function sendMessage() {
             }
         }
 
-        function displayMessage(sender, message) {
+ function runCode(code) {
+            // Create a canvas element to execute the code
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 200;
+            canvas.style.border = '1px solid #fff'; // Style the canvas
+
+            const ctx = canvas.getContext('2d');
+            //Add it to the chat
+            chatArea.appendChild(canvas);
+            try {
+                // Execute the code within a function scope
+              new Function('canvas', 'ctx', code)(canvas, ctx);
+            } catch (error) {
+                console.error('Error executing code:', error);
+                ctx.fillText('Error: ' + error.message, 10, 20);
+            }
+
+    }
+
+//Create message on the HTML tag:
+function displayMessage(sender, message) {
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('message'); // Add the "message" class
             msgDiv.classList.add(sender); // Add the "user" or "bot" class
@@ -120,10 +143,9 @@ async function sendMessage() {
             }
             msgDiv.appendChild(avatarImg); // Append the avatar to the message div
 
-            // Separate handling for code blocks and regular text
-
+           // Separate handling for code blocks and regular text
             const parts = message.split(/```([\s\S]*?)```/); // Splitting at code blocks
-
+            const actions = []
             parts.forEach((part, index) => {
                 const partDiv = document.createElement('div'); // Create a div for each part
                 partDiv.classList.add('message-part'); // Add a class for styling
@@ -132,7 +154,7 @@ async function sendMessage() {
                     // Regular text
                     const textSpan = document.createElement('span');
                     textSpan.textContent = part;
-                    msgDiv.appendChild(textSpan); // Append the text to the message div
+                    partDiv.appendChild(textSpan);
                 } else {
                     // Code block
                     const pre = document.createElement('pre');
@@ -146,7 +168,33 @@ async function sendMessage() {
                     codepenButton.textContent = 'Open in CodePen';
                     codepenButton.classList.add('codepen-button');
                     codepenButton.addEventListener('click', () => {
-                       const codeFormatted = part.replace(/</g, '<').replace(/>/g, '>');
+                   //function for codepen
+                    });
+pre.appendChild(codepenButton)
+//Add "Run" button
+                    const runButton = document.createElement('button');
+                    runButton.textContent = 'Run';
+                    runButton.classList.add('run-button');
+                    runButton.addEventListener('click', () => {
+                        runCode(part); // Run the code when the button is clicked
+                    });
+                    pre.appendChild(runButton); // Add the "Run" button
+                    // Add copy button to the new Codeblock area
+                    const copyButton = document.createElement('button');
+                    copyButton.textContent = 'Copy Code';
+                    copyButton.classList.add('copy-button');
+                    copyButton.addEventListener('click', () => {
+                        navigator.clipboard.writeText(part); //Copy the "part" not the entire message
+                        copyButton.textContent = 'Copied Code!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy Code';
+                        }, 2000); // Reset button text after 2 seconds
+                    });
+                    pre.appendChild(copyButton)
+
+actions.push({ //Added the codepen button
+            element : codepenButton,
+            action : () => {   const codeFormatted = part.replace(/</g, '<').replace(/>/g, '>');
                         //Create a form to post data to CodePen
                         const form = document.createElement('form');
                         form.action = 'https://codepen.io/pen/define';
@@ -173,59 +221,27 @@ async function sendMessage() {
 
                         document.body.removeChild(form); //Clean up from after sending
 
-                    });
-                    pre.appendChild(codepenButton); // Add the "Run" button
-                    // Add copy button to the new Codeblock area
-                    const copyButton = document.createElement('button');
-                    copyButton.textContent = 'Copy Code';
-                    copyButton.classList.add('copy-button');
-                    copyButton.addEventListener('click', () => {
-                        navigator.clipboard.writeText(part); //Copy the "part" not the entire message
-                        copyButton.textContent = 'Copied Code!';
-                        setTimeout(() => {
-                            copyButton.textContent = 'Copy Code';
-                        }, 2000); // Reset button text after 2 seconds
-                    });
-                    pre.appendChild(copyButton)
+                    }});
+                  actions.push({  //added run button
+                                element : runButton,
+                                action : () =>  runCode(part)});
+                  actions.push({ //added copy code to the area
+                                 element: copyButton,
+                                 action : () =>     navigator.clipboard.writeText(part); });
+                    partDiv.appendChild(pre);
+                    codeblocks.push({action : partDiv}); //add the actual button
+
                 }
-                msgDiv.appendChild(partDiv); // Append each part to the message div
+   msgDiv.appendChild(partDiv); // Append each part to the message div
             });
-            if (sender === 'bot') {
-                const copyButton = document.createElement('button');
-                copyButton.textContent = 'Copy Message';
-                copyButton.classList.add('copy-button');
-                copyButton.addEventListener('click', () => {
-                    navigator.clipboard.writeText(message);
-                    copyButton.textContent = 'Copied Message!';
-                    setTimeout(() => {
-                        copyButton.textContent = 'Copy Message';
-                    }, 2000); // Reset button text after 2 seconds
-                });
-                msgDiv.appendChild(copyButton);
-            }
+                if(sender === 'bot'){
+                    const actionDiv = document.createElement('div'); //The text
+                    actionDiv.classList.add('action-Buttons');
+                }
 
             chatArea.appendChild(msgDiv);
             chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
         }
-
- function runCode(code) {
-           const canvas = document.createElement('canvas');
-           canvas.width = 200;
-           canvas.height = 200;
-           canvas.style.border = '1px solid #fff'; // Style the canvas
-
-           const ctx = canvas.getContext('2d');
-           //Add it to the chat
-           chatArea.appendChild(canvas);
-           try {
-               // Execute the code within a function scope
-             new Function('canvas', 'ctx', code)(canvas, ctx);
-           } catch (error) {
-               console.error('Error executing code:', error);
-               ctx.fillText('Error: ' + error.message, 10, 20);
-           }
-
-   }
     </script>
 </body>
 
