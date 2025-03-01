@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -127,14 +127,40 @@ async function sendMessage() {
                     pre.appendChild(code);
                     partDiv.appendChild(pre);
 
-                    // Add "Run" button
-                    const runButton = document.createElement('button');
-                    runButton.textContent = 'Run';
-                    runButton.classList.add('run-button');
-                    runButton.addEventListener('click', () => {
-                        runCode(part); // Run the code when the button is clicked
+                    // Add "Open in CodePen" button
+                    const codepenButton = document.createElement('button');
+                    codepenButton.textContent = 'Open in CodePen';
+                    codepenButton.classList.add('codepen-button');
+                    codepenButton.addEventListener('click', () => {
+                       const codeFormatted = part.replace(/</g, '<').replace(/>/g, '>');
+                        //Create a form to post data to CodePen
+                        const form = document.createElement('form');
+                        form.action = 'https://codepen.io/pen/define';
+                        form.method = 'POST';
+                        form.target = '_blank'; //Open in a new tab
+                        form.style.display = 'none'; //Hide the form
+
+                        //Add the code to the form
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'data';
+                        input.value = JSON.stringify({
+                            html: part,
+                            css: "", //add styling
+                            js: "",//add javasript code if you need it, or pass the part with JS
+                            title: "ChatBot",
+                            description: "Code generated from chatbot",
+                            private: false //or make the code private
+                        });
+                        form.appendChild(input);
+                        document.body.appendChild(form);
+
+                        form.submit(); //send it
+
+                        document.body.removeChild(form); //Clean up from after sending
+
                     });
-                    pre.appendChild(runButton); // Add the "Run" button
+                    pre.appendChild(codepenButton); // Add the "Run" button
                     // Add copy button to the new Codeblock area
                     const copyButton = document.createElement('button');
                     copyButton.textContent = 'Copy Code';
@@ -167,26 +193,6 @@ async function sendMessage() {
             chatArea.appendChild(msgDiv);
             chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
         }
-
-    function runCode(code) {
-            // Create a canvas element to execute the code
-            const canvas = document.createElement('canvas');
-            canvas.width = 200;
-            canvas.height = 200;
-            canvas.style.border = '1px solid #fff'; // Style the canvas
-
-            const ctx = canvas.getContext('2d');
-            //Add it to the chat
-            chatArea.appendChild(canvas);
-            try {
-                // Execute the code within a function scope
-                new Function('canvas', 'ctx', code)(canvas, ctx);
-            } catch (error) {
-                console.error('Error executing code:', error);
-                ctx.fillText('Error: ' + error.message, 10, 20);
-            }
-
-    }
     </script>
 </body>
 
