@@ -2,26 +2,17 @@
 <html>
 <head>
   <title>Gemini Chatbot</title>
-  <style>
-    #chat-area {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 10px;
-      height: 300px;
-      overflow-y: scroll;
-    }
-    #user-input {
-      width: 80%;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
   <h1>Gemini Chatbot</h1>
   <div id="chat-area"></div>
-   <div id="user-input-area">
+  <div id="user-input-area">
     <input type="text" id="user-input" placeholder="Type your message...">
     <button id="send-button">Send</button>
-    </div>
+  </div>
+
   <script>
     const chatArea = document.getElementById('chat-area');
     const userInput = document.getElementById('user-input');
@@ -62,8 +53,8 @@
 
     function displayMessage(sender, message) {
       const msgDiv = document.createElement('div');
-       msgDiv.classList.add('message'); // Add the "message" class
-        msgDiv.classList.add(sender); // Add the "user" or "bot" class
+      msgDiv.classList.add('message'); // Add the "message" class
+      msgDiv.classList.add(sender); // Add the "user" or "bot" class
       msgDiv.textContent = `${message}`;
       chatArea.appendChild(msgDiv);
       chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
