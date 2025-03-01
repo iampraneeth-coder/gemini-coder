@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 
 <head>
@@ -168,18 +168,25 @@ async function sendMessage() {
             chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
         }
 
-        function runCode(code) {
-            // Create an iframe to execute the code
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none'; // Hide the iframe
+    function runCode(code) {
+            // Create a canvas element to execute the code
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 200;
+            canvas.style.border = '1px solid #fff'; // Style the canvas
 
-            document.body.appendChild(iframe);
-            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            const ctx = canvas.getContext('2d');
+            //Add it to the chat
+            chatArea.appendChild(canvas);
+            try {
+                // Execute the code within a function scope
+                new Function('canvas', 'ctx', code)(canvas, ctx);
+            } catch (error) {
+                console.error('Error executing code:', error);
+                ctx.fillText('Error: ' + error.message, 10, 20);
+            }
 
-            // Write the code to the iframe
-            iframeDocument.body.innerHTML = code;
-            document.body.removeChild(iframe); // Remove the iframe after execution
-        }
+    }
     </script>
 </body>
 
