@@ -1,66 +1,224 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Simple Chatbot</title>
-  <style>
-    #chat-area { border: 1px solid #ccc; padding: 10px; width: 400px; height: 300px; overflow-y: scroll; }
-    #user-input-area { margin-top: 10px; }
-  </style>
+    <title>Gemini Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Add Open Sans font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
+    <h1>Gemini Chatbot</h1>
+    <div id="chat-area"></div>
+    <div id="user-input-area">
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button id="send-button">Send</button>
+    </div>
 
-  <h1>Simple Chatbot</h1>
+    <script>
+        const chatArea = document.getElementById('chat-area');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
 
-  <div id="chat-area"></div>
+        let conversationHistory = []; // Initialize conversation history
+        codeblocks = []; //the code for the code block
+         actions = []; //the actions after the codeblock;
 
-  <div id="user-input-area">
-    <input type="text" id="user-input">
-    <button id="send-button">Send</button>
-  </div>
+        sendButton.addEventListener('click', sendMessage);
 
-  <script>
-    const chatArea = document.getElementById('chat-area');
-    const userInput = document.getElementById('user-input');
-    const sendButton = document.getElementById('send-button');
-
-    sendButton.addEventListener('click', sendMessage);
-
-    async function sendMessage() {
-      const messageText = userInput.value;
-      userInput.value = '';
-
-      displayMessage('user', messageText);
-
-      try {
-        const response = await fetch('/.netlify/functions/gemini-api', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message: messageText }),
+        userInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevent default action (new line)
+                sendMessage();
+            }
         });
+async function sendMessage() {
+            const message = userInput.value;
+            userInput.value = '';
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+            displayMessage('user', message);
+            conversationHistory.push({
+                sender: 'user',
+                message: message
+            }); // Add user message to history
+
+            // Display typing indicator
+            chatArea.innerHTML += `
+                <div class="bot message typing-indicator">
+                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Bot" alt="Bot Avatar" class="avatar">
+                    <span><span></span><span></span><span></span></span>
+                </div>`;
+            chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
+
+            let retries = 3; // Maximum number of retries
+            let delay = 1000; // Initial delay in milliseconds
+
+            while (retries > 0) {
+                try {
+                    const response = await fetch('/.netlify/functions/gemini-api', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            history: conversationHistory // Send conversation history to function
+                        })
+                    });
+
+                    if (!response.ok) {
+                        //Improved error message
+                        const errorText = await response.text();
+                        throw new Error(`HTTP error! Status: ${response.status}, Text: ${errorText}`);
+                    }
+
+                    const data = await response.json();
+                    displayMessage('bot', data.reply); // Assuming the Netlify function returns { reply: "..." }
+                    conversationHistory.push({
+                        sender: 'bot',
+                        message: data.reply
+                    }); // Add bot message to history
+                    break; // If successful, exit the retry loop
+
+                } catch (error) {
+                    console.error("Error communicating with Gemini:", error);
+                    //Display detailed error message to the user.
+                    displayMessage('bot', `Error: ${error.message}.  Retrying...(${retries - 1} attempts left)`);
+                     await new Promise(resolve => setTimeout(resolve, delay)); // Wait before retrying
+                    delay *= 2; // Exponential backoff
+                } finally {
+                    // Remove typing indicator
+                    const typingIndicator = chatArea.querySelector('.typing-indicator');
+                    if (typingIndicator) {
+                        typingIndicator.remove();
+                    }
+                    chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
+                }
+
+                retries--;
+            }
+
+            if (retries === 0) {
+                displayMessage('bot', "Error: Failed to get a response after multiple retries. Please try again later.");
+            }
         }
 
-        const data = await response.json();
-        const replyText = data.reply;
-        displayMessage('bot', replyText);
+ function runCode(code) {
+           const canvas = document.createElement('canvas');
+           canvas.width = 200;
+           canvas.height = 200;
+           canvas.style.border = '1px solid #fff'; // Style the canvas
 
-      } catch (error) {
-        console.error('Error communicating with Dialogflow:', error);
-        displayMessage('bot', 'Sorry, I encountered an error.');
-      }
-    }
+           const ctx = canvas.getContext('2d');
+           //Add it to the chat
+           chatArea.appendChild(canvas);
+           try {
+               // Execute the code within a function scope
+             new Function('canvas', 'ctx', code)(canvas, ctx);
+           } catch (error) {
+               console.error('Error executing code:', error);
+               ctx.fillText('Error: ' + error.message, 10, 20);
+           }
 
-    function displayMessage(sender, message) {
-      const messageElement = document.createElement('div');
-      messageElement.textContent = `${sender}: ${message}`;
-      chatArea.appendChild(messageElement);
-      chatArea.scrollTop = chatArea.scrollHeight; // Scroll to bottom
-    }
-  </script>
+   }
 
+//Create message on the HTML tag:
+function displayMessage(sender, message) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message'); // Add the "message" class
+            msgDiv.classList.add(sender); // Add the "user" or "bot" class
+
+            // Create the avatar element
+            const avatarImg = document.createElement('img');
+            avatarImg.classList.add('avatar');
+            if (sender === 'user') {
+                avatarImg.src = 'https://api.dicebear.com/7.x/pixel-art/svg?seed=User'; // User avatar
+                avatarImg.alt = 'User Avatar';
+            } else {
+                avatarImg.src = 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Bot'; // Bot avatar
+                avatarImg.alt = 'Bot Avatar';
+            }
+            msgDiv.appendChild(avatarImg); // Append the avatar to the message div
+
+           // Separate handling for code blocks and regular text
+            const parts = message.split(/```([\s\S]*?)```/); // Splitting at code blocks
+            const actions = []
+            parts.forEach((part, index) => {
+                const partDiv = document.createElement('div'); // Create a div for each part
+                partDiv.classList.add('message-part'); // Add a class for styling
+
+                if (index % 2 === 0) {
+                    // Regular text
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = part;
+                    msgDiv.appendChild(textSpan); // Append the text to the message div
+                } else {
+                    // Code block
+                    const pre = document.createElement('pre');
+                    const code = document.createElement('code');
+                    code.textContent = part;
+                    pre.appendChild(code);
+                    partDiv.appendChild(pre);
+
+                 const codepenButton = document.createElement('button');
+                    codepenButton.textContent = 'Open in CodePen';
+                    codepenButton.classList.add('codepen-button');
+                    codepenButton.addEventListener('click', () => {
+                   //function for codepen
+                     const codeFormatted = part.replace(/</g, '<').replace(/>/g, '>');
+                        //Create a form to post data to CodePen
+                        const form = document.createElement('form');
+                        form.action = 'https://codepen.io/pen/define';
+                        form.method = 'POST';
+                        form.target = '_blank'; //Open in a new tab
+                        form.style.display = 'none'; //Hide the form
+
+                        //Add the code to the form
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'data';
+                        input.value = JSON.stringify({
+                            html: part,
+                            css: "", //add styling
+                            js: "",//add javasript code if you need it, or pass the part with JS
+                            title: "ChatBot",
+                            description: "Code generated from chatbot",
+                            private: false //or make the code private
+                        });
+                        form.appendChild(input);
+                        document.body.appendChild(form);
+
+                        form.submit(); //send it
+
+                        document.body.removeChild(form); //Clean up from after sending
+
+                    });
+pre.appendChild(codepenButton)
+                    // Add copy button to the new Codeblock area
+                    const copyButton = document.createElement('button');
+                    copyButton.textContent = 'Copy Code';
+                    copyButton.classList.add('copy-button');
+                    copyButton.addEventListener('click', () => {
+                        navigator.clipboard.writeText(part); //Copy the "part" not the entire message
+                        copyButton.textContent = 'Copied Code!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy Code';
+                        }, 2000); // Reset button text after 2 seconds
+                    });
+                    pre.appendChild(copyButton)
+    msgDiv.appendChild(partDiv); // Append each part to the message div
+            });
+                if(sender === 'bot'){
+                    const actionDiv = document.createElement('div'); //The text
+                    actionDiv.classList.add('action-Buttons');
+                }
+
+            chatArea.appendChild(msgDiv);
+            chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
+        }
+    </script>
 </body>
+
 </html>
