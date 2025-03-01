@@ -43,6 +43,8 @@ h1 {
   font-size: 16px;
   position: relative;
   transition: all 0.2s ease-in-out;
+  display: flex; /* Add flex layout to message */
+  align-items: flex-start; /* Align items to the top */
 }
 
 /* User Message */
@@ -50,6 +52,7 @@ h1 {
   background-color: #546e7a;
   color: #fff;
   float: right;
+  flex-direction: row-reverse; /* Reverse the order for user messages */
 }
 
 .user::before {
@@ -198,4 +201,14 @@ h1 {
     padding: 9px 14px;
     font-size: 15px;
   }
+}
+
+/* Avatar Styles */
+.avatar {
+  width: 32px; /* Adjust size as needed */
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover; /* Ensure the image fills the circle */
+  flex-shrink: 0; /* Prevent the avatar from shrinking */
 }
