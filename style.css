@@ -81,7 +81,7 @@ h1 {
 .bot::before {
     content: '';
     position: absolute;
-    left: -8px;
+    left: 8 - 8px;
     top: 8px;
     border-width: 8px 8px 8px 0;
     border-style: solid;
