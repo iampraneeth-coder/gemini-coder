@@ -212,3 +212,67 @@ h1 {
   object-fit: cover; /* Ensure the image fills the circle */
   flex-shrink: 0; /* Prevent the avatar from shrinking */
 }
+
+/* Copy Button */
+.copy-button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.copy-button:hover {
+  background-color: #3e8e41;
+}
+
+/* Improved Typing Indicator */
+.typing-indicator {
+    position: relative;
+    bottom: initial;
+    left: initial;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Keep dots aligned to the left */
+    padding: 5px; /* Add some padding around the dots */
+    border-radius: 10px; /* Match bubble corners */
+    /* background-color: rgba(255, 255, 255, 0.1);  Add a subtle background */
+    margin-top: 5px; /* Add some space above */
+}
+
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background-color: #bbb;  /* Darker dots */
+    border-radius: 50%;
+    margin-right: 4px;
+    display: inline-block; /* Ensure they sit side by side */
+    animation: blink 1.2s infinite both; /* Adjusted animation */
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0.2;
+    }
+    20% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
