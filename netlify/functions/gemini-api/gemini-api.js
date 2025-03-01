@@ -22,9 +22,23 @@ exports.handler = async (event) => {
     try {
       const data = JSON.parse(event.body);
       const msg = data.message;
+      const history = data.history || []; // Get conversation history from event
       console.log("Received message from client:", msg); //Log the message
+      console.log("Current history", history)
 
-      const result = await model.generateContent(msg);
+      let prompt = "";
+      if (history.length > 0) {
+        //Create a formated prompt to prime the AI with a certain context
+        prompt += "You are a helpful chatbot. Here is the conversation you have had with the user so far:\n"
+        history.forEach(m => {
+          prompt += `${m.sender}: ${m.message}\n`
+        })
+        prompt += "Now respond to the user based on this conversation. Reply in a short/helpful/concise tone without being too verbose."
+      }
+
+      prompt += msg;
+
+      const result = await model.generateContent(prompt);
       const response = result.response;
       const text = response.text();
       console.log("Gemini API Response:", text); // Log the API response
