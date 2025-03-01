@@ -1,12 +1,12 @@
 /* General Styles */
 body {
-  font-family: 'Open Sans', sans-serif; /* Modern font */
+  font-family: 'Open Sans', sans-serif;
   margin: 0;
-  background-color: #121212; /* Very dark background */
-  color: #fff; /* Light text */
+  background-color: #121212;
+  color: #fff;
   line-height: 1.6;
   overflow-y: scroll;
-  -webkit-font-smoothing: antialiased; /* Improve font rendering */
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
@@ -14,7 +14,7 @@ h1 {
   text-align: center;
   margin-top: 20px;
   color: #ddd;
-  font-weight: 300; /* Lighter font weight */
+  font-weight: 300;
 }
 
 /* Chat Area */
@@ -22,13 +22,14 @@ h1 {
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;
-  background-color: #1e1e1e; /* Slightly lighter background for chat area */
-  border-radius: 12px; /* More rounded corners */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   height: 500px;
   overflow-y: scroll;
   scroll-behavior: smooth;
-  padding-bottom: 70px; /* Make room for the input field */
+  padding-bottom: 70px;
+  position: relative; /* Needed for absolute positioning of typing indicator */
 }
 
 /* Message Styles */
@@ -36,17 +37,17 @@ h1 {
   clear: both;
   margin-bottom: 12px;
   padding: 12px 20px;
-  border-radius: 24px; /* More rounded bubbles */
+  border-radius: 24px;
   word-break: break-word;
   max-width: 70%;
   font-size: 16px;
   position: relative;
-  transition: all 0.2s ease-in-out; /* Smooth transitions */
+  transition: all 0.2s ease-in-out;
 }
 
 /* User Message */
 .user {
-  background-color: #546e7a; /* Muted blue-gray */
+  background-color: #546e7a;
   color: #fff;
   float: right;
 }
@@ -65,7 +66,7 @@ h1 {
 
 /* Bot Message */
 .bot {
-  background-color: #37474f; /* Darker gray for bot */
+  background-color: #37474f;
   color: #eee;
   float: left;
 }
@@ -82,6 +83,44 @@ h1 {
   width: 0;
 }
 
+
+/* Typing Indicator */
+.typing-indicator {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background-color: #aaa;
+  border-radius: 50%;
+  margin-right: 5px;
+  animation: typing 1s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
 /* Input Area */
 #user-input-area {
   max-width: 800px;
@@ -92,7 +131,7 @@ h1 {
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
-  position: fixed; /* Stick to the bottom */
+  position: fixed;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -105,13 +144,13 @@ h1 {
   width: 100%;
   padding: 10px 14px;
   border: none;
-  border-radius: 24px; /* More rounded */
-  background-color: #252525; /* Darker input background */
+  border-radius: 24px;
+  background-color: #252525;
   color: #fff;
   font-size: 16px;
   outline: none;
   transition: background-color 0.3s;
-  font-weight: 300; /* Lighter font weight */
+  font-weight: 300;
 }
 
 #user-input:focus {
@@ -119,7 +158,7 @@ h1 {
 }
 
 #send-button {
-  background-color: #607d8b; /* Blue-gray send button */
+  background-color: #607d8b;
   color: white;
   padding: 10px 18px;
   border: none;
@@ -128,11 +167,11 @@ h1 {
   transition: background-color 0.3s;
   font-size: 16px;
   margin-left: 10px;
-  font-weight: 300; /* Lighter font weight */
+  font-weight: 300;
 }
 
 #send-button:hover {
-  background-color: #455a64; /* Darker blue-gray */
+  background-color: #455a64;
 }
 
 /* Responsiveness */
