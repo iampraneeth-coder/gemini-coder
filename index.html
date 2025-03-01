@@ -106,21 +106,47 @@
             }
             msgDiv.appendChild(avatarImg); // Append the avatar to the message div
 
-            //Code block handling
-            let formattedMessage = message.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>'); //Code block function
-            const textSpan = document.createElement('span');
-            textSpan.innerHTML = formattedMessage;
-            msgDiv.appendChild(textSpan); // Append the message to the message div
+            // Separate handling for code blocks and regular text
 
+            const parts = message.split(/```([\s\S]*?)```/); // Splitting at code blocks
+
+            parts.forEach((part, index) => {
+                if (index % 2 === 0) {
+                    // Regular text
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = part;
+                    msgDiv.appendChild(textSpan); // Append the text to the message div
+                } else {
+                    // Code block
+                    const pre = document.createElement('pre');
+                    const code = document.createElement('code');
+                    code.textContent = part;
+                    pre.appendChild(code);
+                    msgDiv.appendChild(pre);
+
+                    // Add copy button to the new Codeblock area
+                    const copyButton = document.createElement('button');
+                    copyButton.textContent = 'Copy Code';
+                    copyButton.classList.add('copy-button');
+                    copyButton.addEventListener('click', () => {
+                        navigator.clipboard.writeText(part); //Copy the "part" not the entire message
+                        copyButton.textContent = 'Copied Code!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy Code';
+                        }, 2000); // Reset button text after 2 seconds
+                    });
+                    pre.appendChild(copyButton)
+                }
+            });
             if (sender === 'bot') {
                 const copyButton = document.createElement('button');
-                copyButton.textContent = 'Copy';
+                copyButton.textContent = 'Copy Message';
                 copyButton.classList.add('copy-button');
                 copyButton.addEventListener('click', () => {
                     navigator.clipboard.writeText(message);
-                    copyButton.textContent = 'Copied!';
+                    copyButton.textContent = 'Copied Message!';
                     setTimeout(() => {
-                        copyButton.textContent = 'Copy';
+                        copyButton.textContent = 'Copy Message';
                     }, 2000); // Reset button text after 2 seconds
                 });
                 msgDiv.appendChild(copyButton);
